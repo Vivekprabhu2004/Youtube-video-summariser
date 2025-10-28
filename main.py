@@ -4,10 +4,13 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# Get the API key from environment variables
+# Get the API key from environment variables (for deployment) or .env file (for local)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY not found in environment variables. Please check your .env file.")
+    load_dotenv()
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    if not GEMINI_API_KEY:
+        raise ValueError("GEMINI_API_KEY not found in environment variables or .env file.")
 
 import google.generativeai as genai
 
@@ -37,8 +40,8 @@ def extract_video_id(url):
 
 def get_transcript(video_id, languages=["hi"]):
     try:
-        transcript_list = YouTubeTranscriptApi().list(video_id).find_transcript(languages).fetch()
-        transcript = " ".join([chunk.text for chunk in transcript_list])
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=languages)
+        transcript = " ".join([chunk["text"] for chunk in transcript_list])
         return transcript
     except Exception as e:
         print(f"No captions available for this video. Error: {e}")
