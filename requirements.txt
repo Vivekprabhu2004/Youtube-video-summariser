@@ -1,0 +1,10 @@
+youtube-transcript-api
+langchain
+langchain-community
+langchain-gemini
+faiss-cpu
+tiktoken
+python-dotenv
+sentence-transformers
+google-generativeai
+gradio
